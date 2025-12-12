@@ -104,3 +104,92 @@ LLM_evaluation/
 ├── uv.lock                   # Lock file for exact dependency versions (used by uv)
 └── README.md
 ```
+
+# Report
+
+## 1. Architecture Overview
+
+The evaluation pipeline consists of the following components:
+### RAG System (Retrieval-Augmented Generation)
+- Input: User queries.
+- Function: Retrieves top-k relevant documents using a simple keyword retriever and generates an answer using an LLM (gemma2:2b).
+- Output: Generated answer with contextual grounding from retrieved documents.
+
+### LLM-Based Evaluators
+
+Three separate evaluators assess the quality of the answer:
+- Relevance: How well the answer matches the query.
+
+- Completeness: Whether the answer covers all aspects of the question.
+
+- Factual Accuracy: Whether the answer is factually correct and free of hallucinations.
+
+Each evaluator uses the LLM asynchronously to generate a score between 0 and 1.
+
+### Asynchronous Execution
+
+All LLM calls are asynchronous, allowing multiple evaluations to be run concurrently.
+This reduces waiting time compared to sequential evaluation and improves throughput.
+
+### Metrics and Logging
+
+Measures latency for both RAG answer generation and evaluation scoring.
+Stores results including query, answer, scores, and latency in a timestamped CSV file for later analysis.
+
+#### Diagram (simplified flow):
+```bash
+User Query
+     |
+     v
+ [RAG System]
+     |
+     v
+Generated Answer
+     |
+     +------------------+
+     |                  |
+ [Relevance]       [Completeness]       [Factual Accuracy]
+     |                  |                  |
+     +------------------+------------------+
+                       v
+                 Collect Scores
+                       |
+                       v
+                  Save Results CSV
+```
+
+### 2. Design Rationale
+
+Why asynchronous LLM calls?
+
+- LLM calls are network-bound and slow. Using async allows the system to handle multiple evaluations concurrently, reducing total evaluation time.
+
+Why separate evaluators for relevance, completeness, and factuality?
+
+- This provides a granular and interpretable evaluation of the generated answers. Each aspect can be independently measured.
+
+Why use a RAG-based approach?
+
+- Grounding answers in retrieved documents reduces hallucinations and improves factual accuracy compared to a pure generative model.
+
+Why store results in CSV with latencies?
+
+- Enables offline analysis, monitoring, and benchmarking for system improvements.
+
+### 3. Scalability Considerations
+
+If this pipeline were to handle millions of daily conversations:
+
+#### 1. Asynchronous Execution
+
+Non-blocking LLM calls allow high concurrency, ensuring the system can handle large volumes efficiently.
+
+#### 2. Minimized Latency
+
+Each query only evaluates top-k retrieved documents rather than the entire corpus.
+Parallelized scoring of relevance, completeness, and factuality avoids sequential delays.
+
+#### 3.Cost Efficiency
+
+Using asynchronous calls reduces wasted wait time and computational cost per query.
+RAG ensures fewer hallucinations, reducing the need for repeated evaluations or corrections.
