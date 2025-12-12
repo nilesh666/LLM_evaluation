@@ -1,0 +1,112 @@
+{
+  "run_id": "20251212_170846_7542",
+  "timestamp": "2025-12-12T17:09:00.842375",
+  "query": "How are ragas performed and used in classical music?",
+  "result": {
+    "answer": "Here's a breakdown of how ragas are performed and used within classical music, based on the provided documents:\n\n**How Raga Performance Works:**\n\n* **Instruments:**  Ragas can be performed on instruments like the sitar, sarod, tabla, violin, and others that utilize specific scales (melodic patterns) known as ragas. \n* **Vocals:** Some ragas are specifically sung using a melodic style known for its improvisational elements. This often involves intricate vocal techniques and ornamentation.\n\n**Raga Use in Classical Music:**\n\n* **Emotional Evoking:** The most common way ragas are used is to evoke specific emotions.  Think of how certain notes or musical styles can create feelings of joy, sorrow, hope, etc., just like a language's melody. \n* **Beyond Performance:** Raga structures also serve as a framework for improvisation (creating new melodies and improvisational parts), which adds a level of complexity and artistry to the performance. \n\n\n**In Summary:**\n\nRagas are like musical \"building blocks\" in Indian classical music.  They provide a melodic framework, but their true beauty lies in how they're performed by musicians using specific instruments or voices, allowing them to express a range of emotions through improvisation and creative interpretation.",
+    "run_id": "20251212_170846_7542"
+  },
+  "num_documents": 5,
+  "traces": [
+    {
+      "event_type": "query_start",
+      "component": "rag_system",
+      "data": {
+        "run_id": "20251212_170846_7542",
+        "question": "How are ragas performed and used in classical music?",
+        "question_length": 52,
+        "top_k": 3,
+        "total_documents": 5
+      }
+    },
+    {
+      "event_type": "retrieval",
+      "component": "retriever",
+      "data": {
+        "operation": "retrieve_start",
+        "query": "How are ragas performed and used in classical music?",
+        "query_length": 52,
+        "top_k": 3,
+        "total_documents": 5
+      }
+    },
+    {
+      "event_type": "retrieval",
+      "component": "retriever",
+      "data": {
+        "operation": "retrieve_complete",
+        "num_retrieved": 3,
+        "scores": [
+          2,
+          2,
+          1
+        ],
+        "document_ids": [
+          0,
+          4,
+          2
+        ]
+      }
+    },
+    {
+      "event_type": "retrieval",
+      "component": "retriever",
+      "data": {
+        "operation": "retrieve_start",
+        "query": "How are ragas performed and used in classical music?",
+        "query_length": 52,
+        "top_k": 3,
+        "total_documents": 5
+      }
+    },
+    {
+      "event_type": "retrieval",
+      "component": "retriever",
+      "data": {
+        "operation": "retrieve_complete",
+        "num_retrieved": 3,
+        "scores": [
+          2,
+          2,
+          1
+        ],
+        "document_ids": [
+          0,
+          4,
+          2
+        ]
+      }
+    },
+    {
+      "event_type": "llm_call",
+      "component": "google_api",
+      "data": {
+        "operation": "generate_response",
+        "model": "gemma2:2b",
+        "query": "How are ragas performed and used in classical music?",
+        "prompt_length": 517,
+        "context_length": 215,
+        "num_context_docs": 3
+      }
+    },
+    {
+      "event_type": "llm_response",
+      "component": "ollama_api",
+      "data": {
+        "operation": "generate_response",
+        "response_length": 1269,
+        "model": "gemma2:2b"
+      }
+    },
+    {
+      "event_type": "query_complete",
+      "component": "rag_system",
+      "data": {
+        "run_id": "20251212_170846_7542",
+        "success": true,
+        "response_length": 1269,
+        "num_retrieved": 3
+      }
+    }
+  ]
+}

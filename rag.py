@@ -4,9 +4,6 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from utils.config import google_api
-import google.generativeai as genai
-
 DOCUMENTS = [
     "Ragas are melodic frameworks in Indian classical music.",
     "There are many types of ragas, each with its own mood and time of day.",
@@ -51,12 +48,17 @@ class SimpleKeywordRetriever(BaseRetriever):
 
     def _count_keyword_matches(self, query: str, document: str) -> int:
         """Count how many query words appear in the document"""
-        query_words = query.lower().split()
-        document_words = document.lower().split()
-        matches = 0
-        for word in query_words:
-            if word in document_words:
-                matches += 1
+        common_words = {"is", "are", "the", "a", "of", "and", "what", "how", "used", "in", "types", "their", "explain"}
+        query_words = set(query.lower().split())
+        meaningful_query_words = query_words - common_words
+        
+        document_words = set(document.lower().split())
+
+        matches = len(meaningful_query_words.intersection(document_words))
+        
+        if ("ragas" in meaningful_query_words or "raga" in meaningful_query_words) and ("ragas" in document_words or "raga" in document_words):
+             matches = max(matches, 1)
+
         return matches
 
     def get_top_k(self, query: str, k: int = 3) -> List[tuple]:
@@ -252,7 +254,7 @@ class ExampleRAG:
 
         return retrieved_docs
 
-    def generate_response(self, query: str, top_k: int = 3) -> str:
+    async def generate_response(self, query: str, top_k: int = 3) -> str:
         """
         Generate response to query using retrieved documents
 
@@ -291,7 +293,7 @@ class ExampleRAG:
                 component="google_api",
                 data={
                     "operation": "generate_response",
-                    "model": "gemini-2.5-flash",
+                    "model": "gemma2:2b",
                     "query": query,
                     "prompt_length": len(prompt),
                     "context_length": len(context),
@@ -301,30 +303,23 @@ class ExampleRAG:
         )
 
         try:
-            response = self.llm_client.generate_content(
-                contents=[
-                    {"role": "user", "parts": [{"text": final_prompt_text}]},
+            response = await self.llm_client.chat(
+                model="gemma2:2b", # Hardcode the model you used in your main script
+                messages=[
+                {"role": "user", "content": final_prompt_text}
                 ],
             )
 
-            response_text = response.text.strip()
-
-            usage_data = {
-                "input_tokens": response.usage_metadata.prompt_token_count,
-                "output_tokens": response.usage_metadata.candidates_token_count,
-            }
+            response_text = response['message']['content'].strip()
 
             self.traces.append(
                 TraceEvent(
                     event_type="llm_response",
-                    component="gemini_api",
+                    component="ollama_api",
                     data={
                         "operation": "generate_response",
                         "response_length": len(response_text),
-                        "usage": (
-                            usage_data if usage_data else None
-                        ),
-                        "model": "gemini-2.5-flash",
+                        "model": "gemma2:2b",
                     },
                 )
             )
@@ -335,13 +330,13 @@ class ExampleRAG:
             self.traces.append(
                 TraceEvent(
                     event_type="error",
-                    component="gemini_api",
+                    component="ollama_api",
                     data={"operation": "generate_response", "error": str(e)},
                 )
             )
             return f"Error generating response: {str(e)}"
 
-    def query(
+    async def query(
         self, question: str, top_k: int = 3, run_id: Optional[str] = None
     ) -> Dict[str, Any]:
         """
@@ -378,7 +373,7 @@ class ExampleRAG:
 
         try:
             retrieved_docs = self.retrieve_documents(question, top_k)
-            response = self.generate_response(question, top_k)
+            response = await self.generate_response(question, top_k)
 
             result = {"answer": response, "run_id": run_id}
 
@@ -460,28 +455,28 @@ def default_rag_client(llm_client, logdir: str = "logs") -> ExampleRAG:
     return client
 
 
-if __name__ == "__main__":
-    try:
-        api_key = google_api
-    except KeyError:
-        print("Error: OPENAI_API_KEY environment variable is not set.")
-        print("Please set your Goolge API key:")
-        print("export GOOGLE_API_KEY='your_goolge_api_key'")
-        exit(1)
+# if __name__ == "__main__":
+#     try:
+#         api_key = google_api
+#     except KeyError:
+#         print("Error: OPENAI_API_KEY environment variable is not set.")
+#         print("Please set your Goolge API key:")
+#         print("export GOOGLE_API_KEY='your_goolge_api_key'")
+#         exit(1)
 
-    # Initialize RAG system with tracing enabled
-    genai.configure(api_key=google_api)
-    llm=genai.GenerativeModel("gemini-2.5-flash")
-    r = SimpleKeywordRetriever()
-    rag_client = ExampleRAG(llm_client=llm, retriever=r, logdir="logs")
+#     # Initialize RAG system with tracing enabled
+#     genai.configure(api_key=google_api)
+#     llm=genai.GenerativeModel("gemini-2.5-flash")
+#     r = SimpleKeywordRetriever()
+#     rag_client = ExampleRAG(llm_client=llm, retriever=r, logdir="logs")
 
-    # Add documents (this will be traced)
-    rag_client.add_documents(DOCUMENTS)
+#     # Add documents (this will be traced)
+#     rag_client.add_documents(DOCUMENTS)
 
-    # Run query with tracing
-    query = "What is Ragas"
-    print(f"Query: {query}")
-    response = rag_client.query(query, top_k=3)
+#     # Run query with tracing
+#     query = "What is Ragas"
+#     print(f"Query: {query}")
+#     response = rag_client.query(query, top_k=3)
 
-    print("Response:", response["answer"])
-    print(f"Run ID: {response['logs']}")
+#     print("Response:", response["answer"])
+#     print(f"Run ID: {response['logs']}")

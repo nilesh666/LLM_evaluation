@@ -1,0 +1,37 @@
+query,answer,relevance,completeness,factual_accuracy,rag_latency_sec,evaluation_latency_sec,total_latency_sec
+What is Ragas?,I couldn't find any relevant documents to answer your question.,0.0,0.0,0.0,0.002030611038208008,2.1556925773620605,2.1577231884002686
+Explain the types of ragas and their purposes.,"Here's an explanation of the types of ragas and their purposes, based on the provided documents:
+
+**Types of Raga and their Purposes:**
+
+While there isn't a comprehensive document outlining specific raga categories in detail, we can glean insights from the texts you've provided:
+
+* **Thematic Variety:**  Ragas are characterized by distinct emotional and sonic qualities. They serve as frameworks for expressing various emotions – joy, sorrow, longing, or tranquility, to name a few. 
+* **Improvisation & Structure:** The essence of raga lies in improvisation within a set structure. A raga's framework acts as the foundation while musicians add their own expression through melodic choices, tempo, and rhythmic nuances. This allows for a dynamic performance where emotional depth is further explored. 
+
+**How Raga Creates Impact:** 
+The documents highlight that ragas aim to evoke specific emotions in the listener.  A good raga often goes beyond just notes; it creates an atmosphere of feeling through:
+
+* **Mood and Context:** The context of music (e.g., time of day, occasion) influences the perceived emotions evoked by a particular raga. 
+* **Musical Layers:** A skilled musician's skillful playing of the raga can bring forth various moods and perspectives within the listener’s mind.
+
+
+**Important Note:**  To fully understand the diversity and complexity of ragas, it is best to delve into musical sources that explore this further. 
+
+Let me know if you have any other questions!",0.5,0.5,0.5,16.14334201812744,14.197165250778198,30.34050726890564
+How are ragas performed and used in classical music?,"Here's a breakdown of how ragas are performed and used within classical music, based on the provided documents:
+
+**How Raga Performance Works:**
+
+* **Instruments:**  Ragas can be performed on instruments like the sitar, sarod, tabla, violin, and others that utilize specific scales (melodic patterns) known as ragas. 
+* **Vocals:** Some ragas are specifically sung using a melodic style known for its improvisational elements. This often involves intricate vocal techniques and ornamentation.
+
+**Raga Use in Classical Music:**
+
+* **Emotional Evoking:** The most common way ragas are used is to evoke specific emotions.  Think of how certain notes or musical styles can create feelings of joy, sorrow, hope, etc., just like a language's melody. 
+* **Beyond Performance:** Raga structures also serve as a framework for improvisation (creating new melodies and improvisational parts), which adds a level of complexity and artistry to the performance. 
+
+
+**In Summary:**
+
+Ragas are like musical ""building blocks"" in Indian classical music.  They provide a melodic framework, but their true beauty lies in how they're performed by musicians using specific instruments or voices, allowing them to express a range of emotions through improvisation and creative interpretation.",0.8,0.8,1.0,13.918636798858643,3.9512417316436768,17.86987853050232

@@ -1,0 +1,6 @@
+@echo off
+set OLLAMA_ENABLE_GPU=1
+set OLLAMA_FLASH_ATTENTION=1
+set OLLAMA_SCHED_SPREAD=1
+ollama serve
+pause

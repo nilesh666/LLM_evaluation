@@ -1,7 +1,8 @@
-import google.generativeai as genai
-from utils.config import google_api
+import asyncio
+from ollama import AsyncClient
 
-genai.configure(api_key=google_api)
+async def chat():
+  message = {'role': 'user', 'content': 'Why is the sky blue?'}
+  response = await AsyncClient().chat(model='gemma2:2b', messages=[message])
 
-models=genai.list_models()
-print(list(models))
+asyncio.run(chat())
